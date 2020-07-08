@@ -21,6 +21,30 @@ const turnClick = (e) => {
 const turn = (squareId, player) => {
   origBoard[squareId] = player;
   document.getElementById(squareId).innerText = player;
+  let gameWon = checkWin(origBoard, player);
+  if (gameWon) gameOver(gameWon) 
+}
+
+function checkWin(board, player) {
+  let plays = board.reduce((acc , text , idx) => 
+    (text === player) ? acc.concat(idx) : acc, []);
+    console.log(plays)
+  let gameWon = null
+  for (let [index, win] of winCombos.entries()) {
+    if (win.every(elem => plays.indexOf(elem) !== -1)) {
+      gameWon = { index: index, player: player };
+      break;
+    }
+  }
+  return gameWon;
+}
+
+function gameOver(gameWon) {
+  for (let index of winCombos[gameWon.index]) {
+    document.getElementById(index).style.backgroundColor =
+    gameWon.player == huPlayer ? "blue" : "red";
+  }
+  cells.forEach(cell => cell.removeEventListener('click', turnClick, false));
 }
 
 const startGame = () => {
