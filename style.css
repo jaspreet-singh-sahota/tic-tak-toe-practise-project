@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(7, 10, 15);
+}
+
+td {
+  background-image: linear-gradient(0deg, rgba(145, 141, 144, 1) 0%, rgba(92, 91, 94, 0.7) 100%);
+  opacity: 0.9;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 70px;
+  cursor: pointer;
+}
+
+td:hover {
+  border: 2px solid #00ffff;
+  transform: scale(1.05)
+}
+
+table {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.endgame {
+  display: none;
+  background-color: #00ffff;
+  border-radius: 10px;
+  position: absolute;
+  width: 150px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
