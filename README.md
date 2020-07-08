@@ -1,1 +1,1 @@
-# tic-tak-toe-practise-project
+# tic-tak-toe-practice-project
