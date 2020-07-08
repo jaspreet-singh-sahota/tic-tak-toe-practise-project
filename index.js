@@ -1,6 +1,10 @@
 let origBoard = '';
-const huPlayer = '🐕';
-const aiPlayer = '🐈';
+const cells = document.querySelectorAll('.cell');
+
+let huPlayer = '🐕';
+let huPlayerSelected = 'a'
+let aiPlayerSelected = 'b'
+let aiPlayer = '🐈';
 const winCombos = [
   [0, 1, 2],
   [3, 4, 5],
@@ -12,25 +16,32 @@ const winCombos = [
   [6, 4, 2]
 ]
 
-const cells = document.querySelectorAll('.cell');
-
 const turnClick = (e) => {
   if (typeof(origBoard[e.target.id] === 'number')){
-    turn(e.target.id, huPlayer);
-    if (!checkTie()) turn(bestSpot(), aiPlayer)
+    huPlayer = document.createElement("IMG");
+    huPlayer.setAttribute("src", "https://img.icons8.com/color/48/000000/batman.png");
+    aiPlayer = document.createElement("IMG");
+    aiPlayer.setAttribute("src", "https://img.icons8.com/color/48/000000/superman-dc.png");
+
+    turn(e.target.id, huPlayer , 'a');
+    if (!checkTie()) turn(bestSpot(), aiPlayer, 'b')
   }
 }
 
-const turn = (squareId, player) => {
-  origBoard[squareId] = player;
-  document.getElementById(squareId).innerText = player;
-  let gameWon = checkWin(origBoard, player);
-  if (gameWon) gameOver(gameWon) 
+const turn = (squareId, player , char ) => {
+  // if (typeof (origBoard[squareId] === 'number')){
+    origBoard[squareId] = char;
+    console.log(origBoard)
+    document.getElementById(squareId).append(player);
+    let gameWon = checkWin(origBoard, char);
+    if (gameWon) gameOver(gameWon, char) 
+  // }
 }
 
 function checkWin(board, player) {
   let plays = board.reduce((acc , text , idx) => 
     (text === player) ? acc.concat(idx) : acc, []);
+    console.log(plays)
   let gameWon = null
   for (let [index, win] of winCombos.entries()) {
     if (win.every(elem => plays.indexOf(elem) !== -1)) {
@@ -41,13 +52,13 @@ function checkWin(board, player) {
   return gameWon;
 }
 
-function gameOver(gameWon) {
+function gameOver(gameWon, char) {
   for (let index of winCombos[gameWon.index]) {
     document.getElementById(index).style.backgroundColor =
-      gameWon.player == huPlayer ? "#00ffff" : "red";
+      gameWon.player == huPlayerSelected ? "#00ffff" : "red";
   }
   cells.forEach(cell => cell.removeEventListener('click', turnClick, false));
-  declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose.");
+  declareWinner(gameWon.player == huPlayerSelected ? "You win!" : "You lose.");
 }
 
 const startGame = () => {
@@ -66,7 +77,12 @@ function emptySquares() {
 
 function bestSpot() {
   const arr = emptySquares();
-  return arr[(Math.floor(Math.random() * emptySquares().length))];
+  console.log(arr);
+  let aiTurn =  arr[(Math.floor(Math.random() * emptySquares().length))];
+  emptySquares();
+  console.log()
+  origBoard[aiTurn] = aiPlayer;
+  return aiTurn
 }
 
 function checkTie() {
