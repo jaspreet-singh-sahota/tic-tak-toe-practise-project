@@ -1,6 +1,6 @@
 let origBoard = '';
-const huPlayer = 'O';
-const aiPlayer = 'X';
+const huPlayer = '🐕';
+const aiPlayer = '🐈';
 const winCombos = [
   [0, 1, 2],
   [3, 4, 5],
@@ -15,7 +15,10 @@ const winCombos = [
 const cells = document.querySelectorAll('.cell');
 
 const turnClick = (e) => {
-  turn(e.target.id, huPlayer);
+  if (typeof(origBoard[e.target.id] === 'number')){
+    turn(e.target.id, huPlayer);
+    if (!checkTie()) turn(bestSpot(), aiPlayer)
+  }
 }
 
 const turn = (squareId, player) => {
@@ -28,7 +31,6 @@ const turn = (squareId, player) => {
 function checkWin(board, player) {
   let plays = board.reduce((acc , text , idx) => 
     (text === player) ? acc.concat(idx) : acc, []);
-    console.log(plays)
   let gameWon = null
   for (let [index, win] of winCombos.entries()) {
     if (win.every(elem => plays.indexOf(elem) !== -1)) {
@@ -42,9 +44,10 @@ function checkWin(board, player) {
 function gameOver(gameWon) {
   for (let index of winCombos[gameWon.index]) {
     document.getElementById(index).style.backgroundColor =
-    gameWon.player == huPlayer ? "blue" : "red";
+      gameWon.player == huPlayer ? "#00ffff" : "red";
   }
   cells.forEach(cell => cell.removeEventListener('click', turnClick, false));
+  declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose.");
 }
 
 const startGame = () => {
@@ -53,8 +56,33 @@ const startGame = () => {
   cells.forEach(cell => {
     cell.style.removeProperty('background-color');
     cell.innerHTML = '';
-    cell.addEventListener('click', turnClick, false);
+    cell.addEventListener('click', turnClick, {once : true});
   })
+}
+
+function emptySquares() {
+  return origBoard.filter(spot => typeof spot === 'number')
+}
+
+function bestSpot() {
+  const arr = emptySquares();
+  return arr[(Math.floor(Math.random() * emptySquares().length))];
+}
+
+function checkTie() {
+  if (emptySquares().length == 0) {
+    cells.forEach(cell => {cell.style.backgroundColor = "green";
+      cell.removeEventListener('click', turnClick, false)
+    });
+    declareWinner("Tie Game!")
+    return true;
+  }
+  return false;
+}
+
+function declareWinner(winner) {
+  document.querySelector(".endgame").style.display = "block";
+  document.querySelector(".endgame .text").innerHTML = winner;
 }
 
 startGame();
