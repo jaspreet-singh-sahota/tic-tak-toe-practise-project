@@ -2,8 +2,8 @@ let origBoard = '';
 const cells = document.querySelectorAll('.cell');
 
 let huPlayer = '🐕';
-let huPlayerSelected = 'a'
-let aiPlayerSelected = 'b'
+let huPlayerSelected = 'x'
+let aiPlayerSelected = 'o'
 let aiPlayer = '🐈';
 const winCombos = [
   [0, 1, 2],
@@ -17,25 +17,27 @@ const winCombos = [
 ]
 
 const turnClick = (e) => {
-  if (typeof(origBoard[e.target.id] === 'number')){
+  console.log(origBoard[e.target.id])
+  if (typeof origBoard[e.target.id] === 'number'){
     huPlayer = document.createElement("IMG");
-    huPlayer.setAttribute("src", "https://img.icons8.com/color/48/000000/batman.png");
+    huPlayer.setAttribute("src", "https://img.icons8.com/color/160/000000/deadpool.png");
+    huPlayer.style.opacity = "1"
     aiPlayer = document.createElement("IMG");
-    aiPlayer.setAttribute("src", "https://img.icons8.com/color/48/000000/superman-dc.png");
+    aiPlayer.setAttribute("src", "https://img.icons8.com/color/160/000000/spiderman-head.png");
 
-    turn(e.target.id, huPlayer , 'a');
-    if (!checkTie()) turn(bestSpot(), aiPlayer, 'b')
+    turn(e.target.id, huPlayer, 'x');
+    if (!checkTie()) {
+      turn(bestSpot(), aiPlayer, 'o')
+    }
   }
 }
 
 const turn = (squareId, player , char ) => {
-  // if (typeof (origBoard[squareId] === 'number')){
     origBoard[squareId] = char;
     console.log(origBoard)
     document.getElementById(squareId).append(player);
     let gameWon = checkWin(origBoard, char);
     if (gameWon) gameOver(gameWon, char) 
-  // }
 }
 
 function checkWin(board, player) {
@@ -55,7 +57,7 @@ function checkWin(board, player) {
 function gameOver(gameWon, char) {
   for (let index of winCombos[gameWon.index]) {
     document.getElementById(index).style.backgroundColor =
-      gameWon.player == huPlayerSelected ? "#00ffff" : "red";
+      gameWon.player == huPlayerSelected ? "#4afa05" : "red";
   }
   cells.forEach(cell => cell.removeEventListener('click', turnClick, false));
   declareWinner(gameWon.player == huPlayerSelected ? "You win!" : "You lose.");
